@@ -14,6 +14,7 @@ services:
       - "5050:5050"
     environment:
       - MONGO_URI=mongodb://mongodb:27017/mern_db
+    restart: on-failure # <-- BU SATIRI EKLEDİK (Veritabanı hazır olana kadar dener)
     depends_on:
       - mongodb
 

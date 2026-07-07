@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Docker Compose Up
-        run: docker compose up -d --build && sleep 15
+        run: docker compose up -d --build && sleep 30
       - name: Backend Healthcheck
         run: curl --retry 10 --retry-delay 3 http://localhost:5050/healthcheck/ || true
       - name: Cypress E2E Tests
