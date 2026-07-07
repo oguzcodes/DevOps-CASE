@@ -20,7 +20,7 @@ spec:
         ports:
         - containerPort: 5050
         env:
-        - name: MONGO_URI
+        - name: ATLAS_URI
           value: "mongodb://mongodb:27017/mern_db" # Kubernetes DNS üzerinden bağlanır
 ---
 apiVersion: v1
