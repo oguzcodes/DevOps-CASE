@@ -1,5 +1,7 @@
 # DevOps Case Study — MERN Stack & Python ETL on AWS EKS
 
+🌐 **Language / Dil:** **English** · [Türkçe](README-TR.md)
+
 An end-to-end DevOps solution that deploys two distinct workloads to **AWS EKS (Kubernetes)** through a fully automated CI/CD pipeline: a containerized **MERN** application (MongoDB, Express.js, React, Node.js) and a scheduled **Python ETL** job. All cloud infrastructure is provisioned with **Terraform** — nothing is created by hand in the AWS console.
 
 This document is written as an engineering record. Each major decision is presented with the problem it addresses, the option chosen, and — explicitly — what was gained and what was sacrificed. Working YAML is table stakes; the intent here is to show the judgment behind it.
