@@ -1,0 +1,91 @@
+name: MERN CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'mern-project/**'
+      - 'kubernetes/mern/**'
+
+# AWS OIDC için gereken izin
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  # 1. AŞAMA: Test (Önceki yazdığımız kalite kapısı)
+  integration-test:
+    name: Build & E2E Test (Docker Compose)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Docker Compose Up
+        run: docker-compose up -d --build && sleep 15
+      - name: Backend Healthcheck
+        run: curl --retry 10 --retry-delay 3 http://localhost:5050/healthcheck/ || true
+      - name: Cypress E2E Tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./mern-project/client
+          wait-on: 'http://localhost:3000'
+          browser: chrome
+      - name: Cleanup
+        if: always()
+        run: docker-compose down -v
+
+  # 2. AŞAMA: AWS'ye Dağıtım
+  build-and-deploy:
+    name: Build, Push & Deploy to EKS
+    needs: integration-test # Test başarısız olursa deploy ÇALIŞMAZ
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Kodu Çek
+        uses: actions/checkout@v4
+
+      - name: AWS Kimlik Doğrulamasi
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Kurumsal yapıda role-to-assume kullanılır (OIDC). Eğer oluşturmadıysan 
+          # aws-access-key-id ve aws-secret-access-key kullanabilirsin.
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: eu-central-1
+
+      - name: Amazon ECR'a Giriş Yap
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Backend İmajini Derle, Etiketle ve Pushla
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: mern-backend
+          IMAGE_TAG: ${{ github.sha }}
+        working-directory: ./mern-project/server
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Frontend İmajini Derle, Etiketle ve Pushla
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: mern-frontend
+          IMAGE_TAG: ${{ github.sha }}
+        working-directory: ./mern-project/client
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Kubeconfig Ayarlarini Güncelle
+        run: aws eks update-kubeconfig --region eu-central-1 --name mern-case-cluster
+
+      - name: Kubernetes'e Deploy Et
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Önce tüm manifestoları uygula (Veritabanı vb. için)
+          kubectl apply -f kubernetes/mern/
+          
+          # Deployment'lardaki imajları dinamik olarak YENİ derlenen imajlarla değiştir (Sıfır Kesinti)
+          kubectl set image deployment/backend backend=$ECR_REGISTRY/mern-backend:$IMAGE_TAG
+          kubectl set image deployment/frontend frontend=$ECR_REGISTRY/mern-frontend:$IMAGE_TAG

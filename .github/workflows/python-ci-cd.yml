@@ -1,0 +1,49 @@
+name: Python ETL CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'python-project/**'
+      - 'kubernetes/python/**'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: AWS Kimlik Doğrulaması
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: eu-central-1
+
+      - name: Amazon ECR'a Giriş Yap
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Python İmajını Derle, Etiketle ve Pushla
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: python-etl
+          IMAGE_TAG: ${{ github.sha }}
+        working-directory: ./python-project
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Kubeconfig Ayarlarını Güncelle
+        run: aws eks update-kubeconfig --region eu-central-1 --name mern-case-cluster
+
+      - name: Kubernetes CronJob Güncellemesi
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          kubectl apply -f kubernetes/python/cronjob.yaml
+          kubectl set image cronjob/python-etl-job python-etl=$ECR_REGISTRY/python-etl:$IMAGE_TAG

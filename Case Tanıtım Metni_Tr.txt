@@ -1,0 +1,57 @@
+Sevgili .....,
+
+Bu e-postanın size ulaştığını umuyoruz.
+
+Vaka çalışmanızı teslim etmek için 3 gününüz var - ... - .
+
+Aşağıda ödevle ilgili ayrıntılar bulunmaktadır. Herhangi bir sorunuz varsa lütfen bize bildirin.
+
+Bu teknik değerlendirmede, iki farklı türde projeyi dağıtmadaki yeterliliğinizi göstermeniz gerekecektir: bir MERN (MongoDB, Express.js, React, Node.js) yığın uygulaması ve bir Python projesi.
+
+Proje 1: Bir MERN Yığını Uygulamasını Dağıtın.
+
+MERN yığın projesi için, bir React ön ucu, bir Express.js arka ucu ve bir MongoDB veritabanından oluşan basit bir web uygulaması sağlanacaktır. Göreviniz, bu uygulamayı konteynerleştirme ve orkestrasyon için en iyi uygulamaları kullanarak seçtiğiniz bir bulut ortamına (örneğin AWS, HWC, GCP) dağıtmaktır.
+
+GEREKLİLİKLER
+
+Konteynerleştirme: Uygun Docker görüntülerini kullanarak uygulama bileşenlerini (ön uç, arka uç, veritabanı) Dockerize edin.
+
+Orkestrasyon: Uygulamanın dağıtımını, ölçeklenmesini ve izlenmesini yönetmek için bir konteyner orkestrasyon aracı (ör. Kubernetes) kullanın.
+
+CI/CD: Jenkins, GitLab CI/CD veya GitHub Actions gibi bir araç kullanarak bir CI/CD işlem hattı uygulayın. İşlem hattı, uygulamanın oluşturulmasını, test edilmesini ve dağıtımını otomatikleştirmelidir.
+
+Günlük Kaydı ve Uyarılar: Yardımcı program için günlük kaydı uygulayın ve kritik olaylar için uyarıları veya bildirimleri yapılandırın.
+
+Değerlendirme Yönergeleri:
+
+1. En iyi uygulamaları ve sektör standartlarını göz önünde bulundurarak, en rahat ettiğiniz bulut platformlarını, araçları ve teknolojileri seçmekte özgürsünüz.
+
+2. Dağıtım sürecini, altyapı kurulumunu ve herhangi bir yapılandırma adımını ayrıntılı olarak açıklayan net belgeler sağlayın.
+
+3. Çözümünüz ölçeklenebilir, sürdürülebilir ve iyi organize edilmiş olmalıdır.
+
+4. Güvenlik hususlarına dikkat edin ve DevOps en iyi uygulamalarını takip edin.
+
+GÖNDERİM
+
+Aşağıdakileri içeren bir GitHub deposu sağlayın:
+
+1. MERN yığını bileşenleri için Dockerfiles.
+
+2. MERN yığınını düzenlemek için Kubernetes yapılandırma dosyaları.
+
+3. Her iki proje için CI/CD boru hattı yapılandırma dosyaları.
+
+4. Bulut kaynaklarını kurmak için Altyapı Kod betikleri (örneğin, Terraform, CloudFormation).
+
+5. Dağıtım sürecini, mimariyi ve karşılaşılan zorlukları ana hatlarıyla açıklayan belgeler.
+
+6. Uygulamanın dağıtımından sonra çalışan sistemin web üzerinden erişilebilir olduğunu gösteren ekran görüntülerini (frontend, backend API veya ilgili servislerin çalıştığını gösteren sayfalar) paylaşmanız beklenmektedir. Bu ekran görüntüleri, dağıtımın başarılı şekilde tamamlandığını doğrulamak amacıyla değerlendirme sürecinde kullanılacaktır.
+
+Çözümünüzün eksik olmaması, en iyi uygulamalara uyum ve dağıtım sürecinizin genel kalitesine göre değerlendirileceksiniz.
+
+Görevin herhangi bir yönüyle ilgili herhangi bir sorunuz varsa veya açıklamaya ihtiyacınız varsa, yardım için bizimle iletişime geçmekten çekinmeyin.
+
+Ekibimize katılmakla ilgilendiğiniz için bir kez daha teşekkür ederiz. Gönderinizi incelemeyi ve umarız işe alım sürecinin bir sonraki adımlarına geçmeyi dört gözle bekliyoruz.
+
+Saygılarımla,

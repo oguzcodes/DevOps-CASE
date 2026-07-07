@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: python-etl-job
+spec:
+  schedule: "0 * * * *" # Her saat başı çalışır (Örn: 13:00, 14:00, 15:00)
+  successfulJobsHistoryLimit: 3 # Başarılı geçmişi 3 kayıtta tutar
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: python-etl
+            image: <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/python-etl:latest
+            imagePullPolicy: Always
+          restartPolicy: OnFailure # İşlem hata verirse o anlık tekrar dener
