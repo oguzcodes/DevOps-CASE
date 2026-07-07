@@ -6,9 +6,7 @@ WORKDIR /app
 # Güvenlik: root olmayan özel bir kullanıcı oluştur (Kurumsal Best-Practice)
 RUN addgroup --system etlgroup && adduser --system --group etluser
 
-# Eğer projede dış kütüphaneler varsa (pandas, requests vb.) requirements.txt kopyalanır
-# COPY requirements.txt .
-# RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install requests   
 
 # ETL betiğini kopyala
 COPY ETL.py .
