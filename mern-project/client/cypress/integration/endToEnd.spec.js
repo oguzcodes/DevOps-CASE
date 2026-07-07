@@ -14,5 +14,6 @@ describe("Web site availability", () => {
     cy.contains("Create person").click({ force: true });
     cy.visit("http://localhost:3000/records");
     cy.contains("Employee1").should("exist");
+    cy.wait(1000); // Wait for 1 second to ensure the record is created before deletion
   });
 });

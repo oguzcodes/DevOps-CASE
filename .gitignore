@@ -24,3 +24,4 @@ venv/
 # Cypress / Test
 cypress/videos/
 cypress/screenshots/
+mern-project/client/cypress/integration/endToEnd.online.spec.js
