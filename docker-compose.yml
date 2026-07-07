@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+
+  backend:
+    build:
+      context: ./mern-project/server
+      dockerfile: Dockerfile
+    ports:
+      - "5050:5050"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/mern_db
+    depends_on:
+      - mongodb
+
+  frontend:
+    build:
+      context: ./mern-project/client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
