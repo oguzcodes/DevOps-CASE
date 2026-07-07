@@ -4,8 +4,8 @@ metadata:
   name: mongodb
 spec:
   ports:
-  - port: 27017
-    targetPort: 27017
+    - port: 27017
+      targetPort: 27017
   selector:
     app: mongodb
 ---
@@ -25,18 +25,19 @@ spec:
         app: mongodb
     spec:
       containers:
-      - name: mongodb
-        image: mongo:latest
-        ports:
-        - containerPort: 27017
-        volumeMounts:
-        - name: mongo-data
-          mountPath: /data/db
+        - name: mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
   volumeClaimTemplates:
-  - metadata:
-      name: mongo-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 10Gi # 10 GB disk alanı ayırır (AWS EBS gp3 üzerinden)
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp2  
+        resources:
+          requests:
+            storage: 10Gi # 10 GB EBS diski ayırır

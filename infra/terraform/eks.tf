@@ -15,6 +15,16 @@ module "eks" {
   # OIDC, GitHub Actions üzerinden şifresiz/güvenli EKS bağlantısı için şarttır
   enable_irsa = true
 
+  # ⬇️ YENİ: EBS CSI Driver addon'u — PVC'lerin dinamik provision edilebilmesi için şart.
+  # EKS 1.30'da in-tree aws-ebs provisioner çalışmaz; bu addon olmadan
+  # StatefulSet'lerin PVC'leri sonsuza kadar Pending kalır.
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = module.ebs_csi_irsa.iam_role_arn
+    }
+  }
+
   eks_managed_node_groups = {
     spot_nodes = {
       name = "spot-node-group"
@@ -42,4 +52,20 @@ module "eks" {
 
   # AWS yetkilendirme (Senin bilgisayarından erişebilmen için)
   enable_cluster_creator_admin_permissions = true
+}
+
+# Driver'ın ebs-csi-controller-sa service account'u bu rolü assume ederek disk açar.
+module "ebs_csi_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.0"
+
+  role_name             = "mern-case-ebs-csi-role"
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
 }
