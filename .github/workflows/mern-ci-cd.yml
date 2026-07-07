@@ -6,6 +6,8 @@ on:
     paths:
       - 'mern-project/**'
       - 'kubernetes/mern/**'
+      - 'docker-compose.yml'              
+      - '.github/workflows/mern-ci-cd.yml'
 
 # AWS OIDC için gereken izin
 permissions:
