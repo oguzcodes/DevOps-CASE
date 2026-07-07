@@ -3,7 +3,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Güvenlik: root olmayan özel bir kullanıcı oluştur (Kurumsal Best-Practice)
+# Güvenlik: root olmayan özel bir kullanıcı oluştur (Kurumsal Best-Practice) test
 RUN addgroup --system etlgroup && adduser --system --group etluser
 
 RUN pip install requests   
