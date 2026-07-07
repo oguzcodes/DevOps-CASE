@@ -12,7 +12,7 @@ describe("Web site availability", () => {
     cy.get("#position").type("Position1");
     cy.get("#positionIntern").click({ force: true });
     cy.contains("Create person").click({ force: true });
-    cy.visit("http://localhost:3000");
+    cy.visit("http://localhost:3000/records");
     cy.contains("Employee1").should("exist");
   });
 });
